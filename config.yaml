@@ -1,22 +1,58 @@
-name: "Somfy shutters"
-description: "Operate somfy shutters"
+# Add-on name as shown in Home Assistant UI
+name: "Pi-Somfy Controller"
+
+# Description of the add-on
+# Explains what the add-on does
+# Shown in the Home Assistant add-on store
+#
+description: "Control Somfy motorized shutters using a Raspberry Pi's GPIO pins"
+
+# Version of the add-on
 version: "1.0.0"
-slug: "somfy"
+
+# Unique identifier for the add-on (no spaces or special chars)
+slug: "pi_somfy"
+
+# Whether to run an init system (not needed for this add-on)
+init: false
+
+# Supported CPU architectures
 arch:
-  - amd64
-  - aarch64
+  - amd64    # 64-bit Intel/AMD
+  - aarch64  # 64-bit ARM (e.g., Raspberry Pi 4)
+
+# When to start the add-on (services = after Home Assistant is up)
+startup: services
+
+# Ports to expose from the container (host:container)
 ports:
-  8888/tcp: 8888
-  80/tcp: 9909
+  8888/tcp: 8888  # Example port, not used by default
+  80/tcp: 9909    # Example port, not used by default
+
+# Map the Home Assistant config folder into the add-on container (read/write)
 map:
   - config:rw
+
+# Allow access to GPIO pins
+# Required for hardware control
+#
 gpio: true
+
+# Grant privileged access for raw I/O (needed for pigpio)
 privileged:
   - SYS_RAWIO
-full_access: true
+
+# Expose device files for GPIO and memory access
+# Required for pigpio and hardware control
 devices:
   - /dev/mem
   - /dev/vcio
   - /dev/gpiochip0
+  - /dev/gpiomem
+
+# Allow full access to the host system (use with caution)
+full_access: true
+
+# Request access to MQTT service (optional, for integration)
 services:
   - mqtt:want
